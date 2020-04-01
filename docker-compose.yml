@@ -1,0 +1,64 @@
+version: '3'
+
+volumes:
+  nginx_proxy:
+  nginx_vhostd:
+
+services:
+  nginx_proxy:
+    image: smichard/proxy
+    container_name: nginx_proxy
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+        DEFAULT_HOST: default.michard.de
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /tmp/certs:/etc/nginx/certs:ro
+      - nginx_vhostd:/etc/nginx/vhost.d
+      - nginx_proxy:/usr/share/nginx/html
+    labels:
+      - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy=true
+
+  certs_generator:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    container_name: certs_generator
+    volumes:
+      - /tmp/certs:/etc/nginx/certs:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - nginx_vhostd:/etc/nginx/vhost.d
+      - nginx_proxy:/usr/share/nginx/html
+    links:
+      - nginx_proxy
+
+  concourse-db:
+    depends_on:
+        - nginx_proxy
+    image: postgres
+    container_name: database
+    environment:
+      POSTGRES_DB: concourse
+      POSTGRES_PASSWORD: concourse_pass
+      POSTGRES_USER: concourse_user
+      PGDATA: /database
+
+  concourse:
+    image: concourse/concourse
+    container_name: concourse
+    command: quickstart
+    privileged: true
+    depends_on: [concourse-db, nginx_proxy]
+    ports: ["8080:8080"]
+    environment:
+      CONCOURSE_POSTGRES_HOST: concourse-db
+      CONCOURSE_POSTGRES_USER: concourse_user
+      CONCOURSE_POSTGRES_PASSWORD: concourse_pass
+      CONCOURSE_POSTGRES_DATABASE: concourse
+      CONCOURSE_EXTERNAL_URL: http://deploy.michard.io
+      CONCOURSE_ADD_LOCAL_USER: test:test
+      CONCOURSE_MAIN_TEAM_LOCAL_USER: test
+      CONCOURSE_WORKER_BAGGAGECLAIM_DRIVER: overlay
+      VIRTUAL_HOST: "deploy.michard.io,www.deploy.michard.io"
+      LETSENCRYPT_HOST: "deploy.michard.io,www.deploy.michard.io"
+      LETSENCRYPT_EMAIL: "stephan.michard@gmail.com"
