@@ -59,6 +59,8 @@ services:
       CONCOURSE_ADD_LOCAL_USER: test:test
       CONCOURSE_MAIN_TEAM_LOCAL_USER: test
       CONCOURSE_WORKER_BAGGAGECLAIM_DRIVER: overlay
+      CONCOURSE_TLS_BIND_PORT=443
+      CONCOURSE_ENABLE_LETS_ENCRYPT=true
       VIRTUAL_HOST: "deploy.michard.io,www.deploy.michard.io"
       LETSENCRYPT_HOST: "deploy.michard.io,www.deploy.michard.io"
       LETSENCRYPT_EMAIL: "stephan.michard@gmail.com"
