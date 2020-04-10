@@ -6,8 +6,6 @@ volumes:
 
 services:
   nginx_proxy:
-    depends_on:
-      - certs_generator
     image: smichard/proxy
     container_name: nginx_proxy
     ports:
@@ -26,6 +24,8 @@ services:
   certs_generator:
     image: jrcs/letsencrypt-nginx-proxy-companion
     container_name: certs_generator
+    environment:
+      NGINX_PROXY_CONTAINER: nginx_proxy
     volumes:
       - /tmp/certs:/etc/nginx/certs:rw
       - /var/run/docker.sock:/var/run/docker.sock:ro
