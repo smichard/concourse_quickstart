@@ -6,6 +6,8 @@ volumes:
 
 services:
   nginx_proxy:
+    depends_on:
+      - certs_generator
     image: smichard/proxy
     container_name: nginx_proxy
     ports:
@@ -65,7 +67,7 @@ services:
 
   personal_site:
     depends_on:
-        - nginx_proxystephan.michard.de,www.stephan.michard.de,stephan.michard.io,www.stephan.michard.io,michard.io,www.michard.io,michard.de,www.michard.de
+        - nginx_proxy
     image: smichard/personal_website
     container_name: personal_website
     environment:
