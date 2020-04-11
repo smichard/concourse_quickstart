@@ -61,16 +61,6 @@ services:
       CONCOURSE_ADD_LOCAL_USER: test:test
       CONCOURSE_MAIN_TEAM_LOCAL_USER: test
       CONCOURSE_WORKER_BAGGAGECLAIM_DRIVER: overlay
-      VIRTUAL_HOST: "deploy.michard.io,www.deploy.michard.io"
-      LETSENCRYPT_HOST: "deploy.michard.io,www.deploy.michard.io"
-      LETSENCRYPT_EMAIL: "stephan.michard@gmail.com"
-
-  personal_site:
-    depends_on:
-        - nginx_proxy
-    image: smichard/personal_website
-    container_name: personal_website
-    environment:
-      VIRTUAL_HOST: "home.michard.io,www.home.michard.io"
-      LETSENCRYPT_HOST: "home.michard.io,www.home.michard.io"
+      VIRTUAL_HOST: "deploy.michard.io"
+      LETSENCRYPT_HOST: "deploy.michard.io"
       LETSENCRYPT_EMAIL: "stephan.michard@gmail.com"
