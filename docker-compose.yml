@@ -63,4 +63,4 @@ services:
       CONCOURSE_WORKER_BAGGAGECLAIM_DRIVER: overlay
       VIRTUAL_HOST: "deploy.michard.io"
       LETSENCRYPT_HOST: "deploy.michard.io"
-      LETSENCRYPT_EMAIL: "stephan.michard@gmail.com"
+      LETSENCRYPT_EMAIL: "certs@michard.io"
